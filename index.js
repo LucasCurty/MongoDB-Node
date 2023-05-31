@@ -41,8 +41,8 @@ const new_user = new NewUser({
 })
 
 //Enviando os dados 
-const saveUser = (data) =>{
-    data.save()
+const saveUser = () =>{
+    new_user.save()
     .then(console.log('Confirmado'))
     .catch(error => console.log(error))
 }
