@@ -46,10 +46,8 @@ const saveUser = () =>{
     .then(console.log('Confirmado'))
     .catch(error => console.log(error))
 }
-
 //adicionando usuario
-//saveUser(user)
-
+//saveUser()
 
 // ------------------ rotas para interação com o front -----
 
