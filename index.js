@@ -7,26 +7,37 @@ const PORT = process.env.PORT_SERV;
 
 app.listen(PORT, ()=> console.log(`server running`));
 
+//Conecção com o banco de dados
 mongoose.connect(process.env.MONGO_URL)
     .catch(error => console.log(error))
     .finally(console.log("Bando de dados Conectado!"))
 
-//Schema - Classificando os tipos de dados.
+//Schema - Definindo os tipos e dados.
 const typeSchema = new mongoose.Schema({
     id: Number,
     user: String,
     age: Number,
-    create: Number
+    create: String
 })
 //Definindo o banco de dados qual o modelo apontando o Schema acima
 const NewUser = mongoose.model('user', typeSchema)
 
+const data = () =>{
+    let day = new Date().getDate();
+    let month = new Date().getMonth() + 1
+    let year = new Date().getFullYear();
+
+    let fullDate = `${day}.${month}.${year}`
+
+    return fullDate
+}
+
 //Criando os dados conforme o modelo
-const user = new NewUser({
+const new_user = new NewUser({
     id: Math.floor(Math.random()*100),
-    user: "João",
-    age: 12,
-    create: Date.now('year', 'mounth', 'days')
+    user: "Lucas",
+    age: 22,
+    create: data()
 })
 
 //Enviando os dados 
@@ -37,19 +48,19 @@ const saveUser = (data) =>{
 }
 
 //adicionando usuario
-saveUser(user)
-// console.log(user.user)
+//saveUser(user)
 
 
 // ------------------ rotas para interação com o front -----
-app.post('/user', (req,res) => {})
 
-app.get('/:user', (req,res) => {
+app.get('/:find', (req,res) => {
 
-    let name = req.params.user;
+    let name = req.params.find;
     
-    NewUser.find({name})
-        .then(element => console.log(element))
+    NewUser.findOne({user:name})
+        .then(item => {
+            res.status(200).send(`Aqui estao seus dados: ${item.id} ${item.age} ${item.user}`)
+            console.log(item)
+        })
         .catch(error => console.log(error))
-
     })
