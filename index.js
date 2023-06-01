@@ -9,7 +9,7 @@ app.listen(PORT, ()=> console.log(`server running`));
 
 //Conecção com o banco de dados
 mongoose.connect(process.env.MONGO_URL)
-    .catch(error => console.log(error))
+    .catch(error => console.log(error.message))
     .finally(console.log("Bando de dados Conectado!"))
 
 //Schema - Definindo os tipos e dados.
@@ -20,7 +20,7 @@ const typeSchema = new mongoose.Schema({
     create: String
 })
 //Definindo o banco de dados qual o modelo apontando o Schema acima
-const NewUser = mongoose.model('user', typeSchema)
+const NewUser = mongoose.model('users', typeSchema)
 
 const data = () =>{
     let day = new Date().getDate();
@@ -35,8 +35,8 @@ const data = () =>{
 //Criando os dados conforme o modelo
 const new_user = new NewUser({
     id: Math.floor(Math.random()*100),
-    user: "Lucas",
-    age: 22,
+    user: "Thiago",
+    age: 32,
     create: data()
 })
 
@@ -50,15 +50,30 @@ const saveUser = () =>{
 //saveUser()
 
 // ------------------ rotas para interação com o front -----
+app.get('/', (req,res) => res.send('<h1>HELLO WORLD!</h1>'))
+// === Rota para Listar todos
+app.get('/find', (req,res) => {
 
-app.get('/:find', (req,res) => {
-
-    let name = req.params.find;
-    
-    NewUser.findOne({user:name})
-        .then(item => {
-            res.status(200).send(`Aqui estao seus dados: ${item.id} ${item.age} ${item.user}`)
-            console.log(item)
-        })
+    NewUser.find()
+        .then(item => res.status(200).send(console.log(item)))
         .catch(error => console.log(error))
     })
+// Rota para Listar um
+app.get('/:findOne', (req,res) => {
+
+    let name = req.params.findOne;
+    
+    NewUser.find({user:name})
+        .then(item => res.status(200).send(console.log(item)))
+        .catch(error => console.log(error))
+    })
+
+//Rota Para Apagar usuario
+app.delete('/:id', (req,res)=>{
+
+    let del = req.params.id;
+    
+    NewUser.deleteOne({id:del})
+        .then(res.send(`Apagado com sucesso!`)) 
+        .catch(error => console.log(error.message))
+})
